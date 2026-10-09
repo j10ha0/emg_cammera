@@ -105,19 +105,44 @@ python main.py --det-conf 0.2               :: 手很难检到时放宽阈值
 
 ```
 cammera/
-├── main.py            主程序：采集 → 检测 → 计算 → 绘制 → 显示
-├── camera.py          ⭐ 摄像头封装（**换 RealSense/Orbbec 只改这个文件**）
-├── hand_pose.py       MediaPipe HandLandmarker 封装（Tasks API）
-├── joint_angle.py     关节角度计算（与相机无关）
-├── visualize.py       绘制（骨架 / 角度 / 中文面板）
-├── test_angle.py      用合成关键点验证角度公式是否正确
-├── make_test_crops.py 从宽幅图里裁出"手部特写"做测试
-├── run.bat            一键启动
+├── main.py                  主程序：采集 → 检测 → 计算 → 绘制 → 显示
+│                            （支持实时 / 离线 --image / 无窗口 --headless）
+├── camera.py                ⭐ 摄像头封装（**换 RealSense/Orbbec 只改这个文件**）
+├── hand_pose.py             MediaPipe HandLandmarker 封装（Tasks API，自动下载模型）
+├── joint_angle.py           关节角度计算（与相机无关）
+├── visualize.py             绘制（骨架 / 角度 / 中文面板 / 弯曲度条形）
+│
+├── capture_poses.py         ⭐ 交互式采集自己的手型（摆姿势按 SPACE 抓拍）
+├── make_ppt_pack.py         ⭐ 一键生成 PPT 图包（3 张图：系统/手型/可靠性）
+├── make_ppt_figures.py      单张图自动裁"手部特写"并标注
+├── make_test_crops.py       从宽幅图里批量裁"手部特写"做测试
+├── test_angle.py            用合成关键点验证角度公式是否正确
+├── test_angle_robustness.py ⭐ 关节角抗噪分析（图3 的数据来源）
+│
+├── run.bat                  一键启动（内置 Python 自动搜索）
 ├── requirements.txt
-├── models/            自动下载的 hand_landmarker.task
-├── test_images/       测试图（原始宽幅）
-├── test_images2/      测试图（手部特写）
-└── out/               输出：截图 / 标注图 / 角度 CSV / 录制视频
+├── README.md
+├── DATA_SOURCES.md          数据来源与许可声明
+├── .gitignore
+│
+├── ppt_figures/             ⭐ PPT 图包（fig1/fig2/fig3 + 说明）
+├── test_images/  test_images2/   测试图（原始宽幅 / 手部特写）
+├── nc_src/  ppt_src/             测试图源（无遮挡帧 / 各物体抓握帧）
+├── models/                  自动下载的 hand_landmarker.task（不入库）
+└── out/                     运行时输出：截图 / 标注图 / 角度 CSV / 录制视频（不入库）
+```
+
+### 常用命令速查
+
+```bat
+run.bat                                    :: 实时显示（推荐）
+run.bat --log                              :: 顺便记录角度 CSV
+run.bat --record                           :: 顺便录制标注视频
+python capture_poses.py                    :: 采集自己的手型（做 PPT 用）
+python make_ppt_pack.py                    :: 重新生成 PPT 图包
+python test_angle.py                       :: 验证角度公式（应输出"✅ 角度公式正确"）
+python test_angle_robustness.py            :: 关角度可靠性分析
+python main.py --image 某目录 --panel      :: 离线批量跑图片
 ```
 
 **分层设计**：`camera.py` 是唯一与相机相关的模块。
