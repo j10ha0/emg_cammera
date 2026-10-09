@@ -1,0 +1,8 @@
+# requirements.txt
+# 实时手部关节角度标注
+# 安装:  python -m pip install -r requirements.txt
+
+opencv-python>=4.8
+mediapipe>=0.10          # 本机实测 1.0.1（注意：1.0+ 已移除 mp.solutions，本代码用的是新 Tasks API）
+numpy>=1.24
+Pillow>=9.0              # 仅用于渲染中文面板文字
